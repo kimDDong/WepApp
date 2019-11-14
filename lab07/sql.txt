@@ -1,0 +1,150 @@
+CREATE TABLE student (
+	student_id INT PRIMARY KEY,
+	name VARCHAR(10),
+	year SMALLINT default 1,
+	dept_no INT,
+	major VARCHAR(20) not NULL
+);
+
+
+CREATE TABLE department (
+	dept_no INT default 1 PRIMARY KEY,
+	dept_name VARCHAR(20),
+	office VARCHAR(20),
+	office_tel VARCHAR(13) not null UNIQUE
+);
+
+
+ALTER TABLE student CHANGE COLUMN major major VARCHAR(30);
+DESC student
+ALTER TABLE student ADD COLUMN gender TINYINT;
+
+
+ALTER TABLE student DROP COLUMN gender;
+INSERT INTO student VALUES (20070002, 'Jane Smith', 3, 4, 'Business Administration');
+INSERT INTO student VALUES (20060001, 'Ashley Jackson', 4, 4, 'Business Administration');
+INSERT INTO student VALUES (20030001, 'Liam Johnson', 4, 2, 'Electrical Engineering');
+INSERT INTO student VALUES (20040003, 'Jacob Lee', 3, 2, 'Electrical Engineering');
+INSERT INTO student VALUES (20060002, 'Noah Kim', 3, 1, 'Computer Science');
+INSERT INTO student VALUES (20100002, 'Ava Lim', 3, 4, 'Business Administration');
+INSERT INTO student VALUES (20110001, 'Emma Watson', 2, 1, 'Computer Science');
+INSERT INTO student VALUES (20080003, 'Lisa Maria', 4, 3, 'Law');
+INSERT INTO student VALUES (20040002, 'Jacob William', 4, 5, 'Law')
+INSERT INTO student VALUES (20070001, 'Emily Rose', 4, 4, 'Business Administration');
+INSERT INTO student VALUES (20100001, 'Ethan Hunt', 3, 4, 'Business Administration');
+INSERT INTO student VALUES (20110002, 'Jason Mraz' 2, 1, 'Electrical Engineering');
+INSERT INTO student VALUES (20030002, 'John Smith', 5, 1, 'Computer Science');
+INSERT INTO student VALUES (20070003, 'Sophia Park', 4, 3, 'Law');
+INSERT INTO student VALUES (20070007, 'James Michael', 2, 4, 'Business Administration');
+INSERT INTO student VALUES (20100003, 'James Bond', 3, 1, 'Computer Science');
+INSERT INTO student VALUES (20070005, 'Olivia Madison', 2, 5, 'English Language and Literature');
+
+
+INSERT INTO department VALUES (1, 'Computer Science', 'Science Building 101', '02-3290-0123');
+INSERT INTO department VALUES (2, 'Electrical Engineering', 'Engineering Building 401', '02-3290-2345');
+INSERT INTO department VALUES (3, 'Law', 'Law Building 201', '02-3290-7896');
+INSERT INTO department VALUES (4,  'Business Administration', 'Business Building 104', '02-3290-1112');
+INSERT INTO department VALUES (5, 'English Language and Literature', 'Language Building 303', '02-3290-4412');
+
+
+UPDATE student SET major = "Electrical and Electronics Engineering" WHERE major = "Electrical Engineering";
+INSERT INTO department VALUES (6, 'Special Education', 'Education Building 403', '02-3290-2347');
+UPDATE student SET major = "Special Education" WHERE name = "Emma Watson";
+ALTER TABLE name DROP COLUMN columnName;
+DELETE FROM student WHERE name = "Jason Mraz";
+DELETE FROM student WHERE name = "John Smith";
+
+
+select * from student WHERE major = "Computer Science";
+select student_id, year, major from student;
+select * from student WHERE year = 3;
+select * from student WHERE year = 1 or year = 2;
+select * from student WHERE dept_no = 4;
+
+
+select * from student WHERE student_id LIKE "%2007%";
+select * from student order by student_id;
+select major from student group by major HAVING avg(year) > 3;
+select * from student where major = "Business Administration" and student_id LIKE "%2007%" LIMIT 2;
+
+
+select role
+from roles
+join movies on movie_id = movies.id
+where movies.name = "Pi";
+
+select actors.first_name, actors.last_name, roles.role
+from actors
+join roles on actors.id = actor_id
+join movies on movie_id = movies.id
+where movies.name = "Pi";
+
+-- retry to use IN
+select A.first_name, A.last_name
+from
+(select actors.first_name, actors.last_name
+from actors
+join roles on actors.id = actor_id
+join movies on movie_id = movies.id
+where movies.name = "Kill Bill: Vol. 1") as A
+join
+(select actors.first_name, actors.last_name
+from actors
+join roles on actors.id = actor_id
+join movies on movie_id = movies.id
+where movies.name = "Kill Bill: Vol. 2") as B
+on A.first_name = B.first_name and A.last_name = B.last_name;
+
+select first_name,last_name
+from roles join actors on actor_id=actors.id
+group by actor_id
+order by count(movie_id) desc
+limit 7;
+
+select genre
+from movies_genres
+join movies on movies.id = movie_id
+group by genre
+order by count(movie_id) desc
+limit 3;
+
+select directors.first_name, directors.last_name
+from directors
+join movies_directors on directors.id = director_id
+join movies on movies.id = movies_directors.movie_id
+join movies_genres on movies_genres.movie_id = movies.id
+where movies_genres.genre = "Thriller"
+order by count(movies.id)
+limit 1;
+
+
+select grade
+from grades
+join courses on course_id = courses.id
+where courses.name = "Computer Science 143";
+
+select students.name, grades.grade
+from students
+join grades on student_id = students.id
+join courses on courses.id = course_id
+where courses.name = "Computer Science 143"
+and (grades.grade like "B%" or grades.grade like "A%");
+
+select students.name, courses.name, grades.grade
+from students
+join grades on student_id = students.id
+join courses on courses.id = course_id
+where grades.grade like "B%"
+or grades.grade like "A%";
+
+select courses.name 
+from courses
+join grades on courses.id = course_id
+join students on student_id = students.id
+group by courses.id
+HAVING count(course_id) >= 2;
+
+receives a DB name and an SQL query from user inputs through form
+connects to the specified DB
+queries data with the given SQL query (can use queries constructed from previous exercises)
+displays each row of the query results in unordered list
